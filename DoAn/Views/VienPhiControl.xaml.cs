@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Windows;
 using System.Windows.Controls;
 using DoAn.DataAccess;
+using DoAn.Models;
 
 namespace DoAn.Views
 {
@@ -11,17 +12,77 @@ namespace DoAn.Views
     {
         private DatabaseConnection db = new DatabaseConnection();
         private string maPhieuDangChon = "";
-        private decimal tongTienThuoc = 0;
-        private decimal tienKham = 100000; // Tiền khám mặc định 100k
+
+        // Đã bổ sung biến này để hệ thống biết đang thu tiền cho hóa đơn nào
+        private string maHoaDonDangChon = "";
 
         public VienPhiControl()
         {
             InitializeComponent();
-            LoadDanhSachCho();
+            LoadDanhSachChoThanhToan();
         }
 
-        // Tải danh sách các Phiếu Khám CHƯA có Hóa đơn hoặc Hóa đơn chưa thanh toán
-        private void LoadDanhSachCho(string tuKhoa = "")
+        // --- 1. TẢI DANH SÁCH BỆNH NHÂN ĐÃ KHÁM XONG (CHỜ ĐÓNG TIỀN) ---
+        private void LoadDanhSachChoThanhToan(string tukhoa = "")
+        {
+            try
+            {
+                List<PhieuKham> dsCho = new List<PhieuKham>();
+                using (SqlConnection conn = db.GetConnection())
+                {
+                    conn.Open();
+                    string query = @"
+                        SELECT p.MaPhieu, p.NgayKham, b.HoTen
+                        FROM PhieuKham p
+                        INNER JOIN BenhNhan b ON p.MaBenhNhan = b.MaBenhNhan
+                        WHERE p.TrangThai = N'Đã khám' AND (b.HoTen LIKE @tukhoa OR p.MaPhieu LIKE @tukhoa)";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@tukhoa", "%" + tukhoa + "%");
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                dsCho.Add(new PhieuKham
+                                {
+                                    MaPhieu = reader["MaPhieu"].ToString(),
+                                    NgayKham = Convert.ToDateTime(reader["NgayKham"]),
+                                    TenBenhNhan = reader["HoTen"].ToString() // Gán đúng tên thuộc tính TenBenhNhan
+                                });
+                            }
+                        }
+                    }
+                }
+                dgChoThanhToan.ItemsSource = dsCho;
+            }
+            catch (Exception ex) { MessageBox.Show("Lỗi tải danh sách chờ: " + ex.Message); }
+        }
+
+        private void BtnTim_Click(object sender, RoutedEventArgs e)
+        {
+            LoadDanhSachChoThanhToan(txtTimKiem.Text.Trim());
+        }
+
+        // --- 2. KHI CLICK CHỌN BỆNH NHÂN TRONG BẢNG ---
+        private void DgChoThanhToan_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgChoThanhToan.SelectedItem is PhieuKham pk)
+            {
+                maPhieuDangChon = pk.MaPhieu;
+                txtTenBN.Text = pk.TenBenhNhan; // Đã sửa HoTen thành TenBenhNhan
+
+                LoadThongTinHoaDon(maPhieuDangChon);
+                LoadChiTietDichVu(maPhieuDangChon);
+                LoadChiTietThuoc(maPhieuDangChon);
+
+                btnThanhToan.IsEnabled = true;
+                btnInHoaDon.IsEnabled = true;
+            }
+        }
+
+        // --- 3. LẤY TỔNG TIỀN & MÃ HÓA ĐƠN CHỜ ---
+        private void LoadThongTinHoaDon(string maPhieu)
         {
             try
             {
@@ -29,52 +90,76 @@ namespace DoAn.Views
                 {
                     conn.Open();
                     string query = @"
-                        SELECT p.MaPhieu, b.HoTen, p.NgayKham, p.ChanDoan 
-                        FROM PhieuKham p
-                        INNER JOIN BenhNhan b ON p.MaBenhNhan = b.MaBenhNhan
-                        LEFT JOIN HoaDon h ON p.MaPhieu = h.MaPhieu
-                        WHERE (h.TrangThai IS NULL OR h.TrangThai = N'Chưa thanh toán')
-                        AND (b.HoTen LIKE @tukhoa OR p.MaPhieu LIKE @tukhoa)";
+                        SELECT h.MaHoaDon, h.TienKham, h.TienThuoc, h.TienDichVu, h.TongTien, p.ChanDoan 
+                        FROM HoaDon h 
+                        INNER JOIN PhieuKham p ON h.MaPhieu = p.MaPhieu
+                        WHERE h.MaPhieu = @maphieu AND h.TrangThai = N'Chưa thanh toán'";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@tukhoa", "%" + tuKhoa + "%");
-                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                        DataTable dt = new DataTable();
-                        adapter.Fill(dt);
-                        dgChoThanhToan.ItemsSource = dt.DefaultView;
+                        cmd.Parameters.AddWithValue("@maphieu", maPhieu);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                maHoaDonDangChon = reader["MaHoaDon"].ToString();
+                                txtMaHoaDon.Text = "Mã HĐ: " + maHoaDonDangChon;
+                                txtChanDoan.Text = reader["ChanDoan"].ToString();
+
+                                decimal tienKham = Convert.ToDecimal(reader["TienKham"]);
+                                decimal tienDichVu = Convert.ToDecimal(reader["TienDichVu"]);
+                                decimal tienThuoc = Convert.ToDecimal(reader["TienThuoc"]);
+                                decimal tongTien = Convert.ToDecimal(reader["TongTien"]);
+
+                                txtTienKham.Text = tienKham.ToString("N0") + " VNĐ";
+                                txtTienDichVu.Text = tienDichVu.ToString("N0") + " VNĐ";
+                                txtTienThuoc.Text = tienThuoc.ToString("N0") + " VNĐ";
+                                txtTongTien.Text = tongTien.ToString("N0") + " VNĐ";
+                            }
+                        }
                     }
                 }
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi tải danh sách: " + ex.Message); }
+            catch (Exception ex) { MessageBox.Show("Lỗi lấy thông tin hóa đơn: " + ex.Message); }
         }
 
-        private void BtnTim_Click(object sender, RoutedEventArgs e)
+        // --- 4. LẤY CHI TIẾT BẢNG DỊCH VỤ ---
+        private void LoadChiTietDichVu(string maPhieu)
         {
-            LoadDanhSachCho(txtTimKiem.Text.Trim());
-        }
-
-        // Khi Thu ngân click vào 1 phiếu khám để tính tiền
-        private void DgChoThanhToan_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (dgChoThanhToan.SelectedItem is DataRowView row)
+            List<ChiTietDichVu> dsDichVu = new List<ChiTietDichVu>();
+            using (SqlConnection conn = db.GetConnection())
             {
-                maPhieuDangChon = row["MaPhieu"].ToString();
-                txtTenBN.Text = row["HoTen"].ToString();
-                txtChanDoan.Text = row["ChanDoan"].ToString();
-                txtMaHoaDon.Text = $"Mã HĐ: HD-{DateTime.Now:yyyyMMdd}-{new Random().Next(100, 999)}";
+                conn.Open();
+                string query = @"
+                    SELECT d.TenDichVu, d.GiaDichVu, (c.SoLuong * d.GiaDichVu) AS ThanhTien
+                    FROM ChiTietDichVu c
+                    INNER JOIN DichVu d ON c.MaDichVu = d.MaDichVu
+                    WHERE c.MaPhieu = @maphieu";
 
-                LoadChiTietThuoc(maPhieuDangChon);
-
-                btnThanhToan.IsEnabled = true;
-                btnInHoaDon.IsEnabled = false; // Chỉ in được sau khi đã thanh toán
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@maphieu", maPhieu);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            dsDichVu.Add(new ChiTietDichVu
+                            {
+                                TenDichVu = reader["TenDichVu"].ToString(),
+                                GiaDichVu = Convert.ToDecimal(reader["GiaDichVu"]),
+                                ThanhTien = Convert.ToDecimal(reader["ThanhTien"])
+                            });
+                        }
+                    }
+                }
             }
+            dgChiTietDichVu.ItemsSource = dsDichVu;
         }
 
-        // Truy vấn chi tiết thuốc và tính tổng tiền
+        // --- 5. LẤY CHI TIẾT BẢNG ĐƠN THUỐC ---
         private void LoadChiTietThuoc(string maPhieu)
         {
-            tongTienThuoc = 0;
+            List<ChiTietDonThuoc> dsThuoc = new List<ChiTietDonThuoc>();
             using (SqlConnection conn = db.GetConnection())
             {
                 conn.Open();
@@ -87,84 +172,76 @@ namespace DoAn.Views
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@maphieu", maPhieu);
-                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                    DataTable dt = new DataTable();
-                    adapter.Fill(dt);
-                    dgChiTietThuoc.ItemsSource = dt.DefaultView;
-
-                    // Tính tổng tiền thuốc bằng cách cộng dồn cột ThanhTien
-                    foreach (DataRow r in dt.Rows)
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        tongTienThuoc += Convert.ToDecimal(r["ThanhTien"]);
+                        while (reader.Read())
+                        {
+                            dsThuoc.Add(new ChiTietDonThuoc
+                            {
+                                TenThuoc = reader["TenThuoc"].ToString(),
+                                SoLuong = Convert.ToInt32(reader["SoLuong"]),
+                                GiaThuoc = Convert.ToDecimal(reader["GiaThuoc"]),
+                                ThanhTien = Convert.ToDecimal(reader["ThanhTien"])
+                            });
+                        }
                     }
                 }
             }
-
-            // Cập nhật lên Giao diện
-            txtTienThuoc.Text = tongTienThuoc.ToString("N0") + " VNĐ";
-            txtTienKham.Text = tienKham.ToString("N0") + " VNĐ";
-            txtTongTien.Text = (tienKham + tongTienThuoc).ToString("N0") + " VNĐ";
+            dgChiTietThuoc.ItemsSource = dsThuoc;
         }
 
-        // Lưu hóa đơn và chuyển trạng thái thành "Đã thanh toán"
+        // --- 6. XÁC NHẬN THU TIỀN VÀ XÓA TRẮNG MÀN HÌNH ---
         private void BtnThanhToan_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(maPhieuDangChon)) return;
+            if (string.IsNullOrEmpty(maHoaDonDangChon)) return;
 
-            if (MessageBox.Show("Xác nhận thu tiền cho phiếu khám này?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            if (MessageBox.Show("Xác nhận thu tiền hóa đơn này?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 try
                 {
                     using (SqlConnection conn = db.GetConnection())
                     {
                         conn.Open();
-                        // Dùng tính năng MERGE hoặc IF EXISTS để tạo/cập nhật hóa đơn
-                        string query = @"
-                            INSERT INTO HoaDon (MaHoaDon, MaPhieu, TienKham, TienThuoc, TongTien, TrangThai, NgayThanhToan)
-                            VALUES (@mahd, @maphieu, @tienkham, @tienthuoc, @tong, N'Đã thanh toán', GETDATE())";
-
+                        string query = "UPDATE HoaDon SET TrangThai = N'Đã thanh toán', NgayThanhToan = GETDATE() WHERE MaHoaDon = @mahd";
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
-                            cmd.Parameters.AddWithValue("@mahd", txtMaHoaDon.Text.Replace("Mã HĐ: ", ""));
-                            cmd.Parameters.AddWithValue("@maphieu", maPhieuDangChon);
-                            cmd.Parameters.AddWithValue("@tienkham", tienKham);
-                            cmd.Parameters.AddWithValue("@tienthuoc", tongTienThuoc);
-                            cmd.Parameters.AddWithValue("@tong", tienKham + tongTienThuoc);
-
+                            cmd.Parameters.AddWithValue("@mahd", maHoaDonDangChon);
                             cmd.ExecuteNonQuery();
                         }
                     }
-
                     MessageBox.Show("Thanh toán thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadDanhSachCho(); // Load lại danh sách (BN này sẽ biến mất khỏi hàng đợi thu ngân)
+
+                    // Xóa trắng giao diện sau khi thu tiền xong
+                    txtTenBN.Text = "---";
+                    txtChanDoan.Text = "---";
+                    txtMaHoaDon.Text = "Mã HĐ: HD-............";
+                    txtTienKham.Text = "0 VNĐ";
+                    txtTienDichVu.Text = "0 VNĐ";
+                    txtTienThuoc.Text = "0 VNĐ";
+                    txtTongTien.Text = "0 VNĐ";
+
+                    dgChiTietDichVu.ItemsSource = null;
+                    dgChiTietThuoc.ItemsSource = null;
 
                     btnThanhToan.IsEnabled = false;
-                    btnInHoaDon.IsEnabled = true; // Cho phép in hóa đơn
+                    LoadDanhSachChoThanhToan(); // Tải lại danh sách bệnh nhân
                 }
-                catch (Exception ex) { MessageBox.Show("Lỗi thanh toán: Có thể hóa đơn cho phiếu này đã tồn tại.\n" + ex.Message); }
+                catch (Exception ex) { MessageBox.Show("Lỗi thanh toán: " + ex.Message); }
             }
         }
 
-        // Nâng cao: In hóa đơn
-       
-           private void BtnInHoaDon_Click(object sender, RoutedEventArgs e)
+        // --- 7. LỆNH IN HÓA ĐƠN RA MÁY IN (HOẶC PDF) ---
+        private void BtnInHoaDon_Click(object sender, RoutedEventArgs e)
         {
-            // Mở hộp thoại chọn máy in của Windows
             PrintDialog printDialog = new PrintDialog();
-
-            // Nếu người dùng bấm OK (Print) trong hộp thoại
             if (printDialog.ShowDialog() == true)
             {
-                // 1. Giấu cái thanh chứa 2 nút bấm đi để không in ra giấy
                 panelNutBam.Visibility = Visibility.Hidden;
-
-                // 2. Chỉnh lại lề một chút cho đẹp khi in (tùy chọn)
                 Thickness oldMargin = GridHoaDonToPrint.Margin;
                 GridHoaDonToPrint.Margin = new Thickness(20);
 
                 try
                 {
-                    // 3. Thực hiện lệnh in cái khung GridHoaDonToPrint
                     printDialog.PrintVisual(GridHoaDonToPrint, "In Hoa Don Vien Phi");
                     MessageBox.Show("Đã gửi lệnh in thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -174,11 +251,10 @@ namespace DoAn.Views
                 }
                 finally
                 {
-                    // 4. In xong thì trả lại giao diện như cũ
                     panelNutBam.Visibility = Visibility.Visible;
                     GridHoaDonToPrint.Margin = oldMargin;
                 }
             }
         }
     }
-    }
+}
