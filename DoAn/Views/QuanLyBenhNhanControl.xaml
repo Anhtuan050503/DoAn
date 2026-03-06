@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="DoAn.Views.QuanLyBenhNhanControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             Background="White" Margin="10">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Header="Thông tin Bệnh nhân" Grid.Row="0" Margin="0,0,0,10" Padding="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Mã BN:" Grid.Row="0" Grid.Column="0" Margin="5"/>
+                <TextBox x:Name="txtMaBN" Grid.Row="0" Grid.Column="1" Margin="5" Height="25"/>
+
+                <Label Content="Họ tên:" Grid.Row="0" Grid.Column="2" Margin="5"/>
+                <TextBox x:Name="txtHoTen" Grid.Row="0" Grid.Column="3" Margin="5" Height="25"/>
+
+                <Label Content="Giới tính:" Grid.Row="0" Grid.Column="4" Margin="5"/>
+                <ComboBox x:Name="cboGioiTinh" Grid.Row="0" Grid.Column="5" Margin="5" Height="25">
+                    <ComboBoxItem Content="Nam" IsSelected="True"/>
+                    <ComboBoxItem Content="Nữ"/>
+                </ComboBox>
+
+                <Label Content="Ngày sinh:" Grid.Row="1" Grid.Column="0" Margin="5"/>
+                <DatePicker x:Name="dpNgaySinh" Grid.Row="1" Grid.Column="1" Margin="5" Height="25" SelectedDate="{x:Static sys:DateTime.Now}"/>
+
+                <Label Content="SĐT:" Grid.Row="1" Grid.Column="2" Margin="5"/>
+                <TextBox x:Name="txtSDT" Grid.Row="1" Grid.Column="3" Margin="5" Height="25"/>
+
+                <Label Content="Nhóm máu:" Grid.Row="1" Grid.Column="4" Margin="5"/>
+                <ComboBox x:Name="cboNhomMau" Grid.Row="1" Grid.Column="5" Margin="5" Height="25">
+                    <ComboBoxItem Content="Chưa rõ" IsSelected="True"/>
+                    <ComboBoxItem Content="A"/>
+                    <ComboBoxItem Content="B"/>
+                    <ComboBoxItem Content="AB"/>
+                    <ComboBoxItem Content="O"/>
+                </ComboBox>
+
+                <Label Content="Địa chỉ:" Grid.Row="2" Grid.Column="0" Margin="5"/>
+                <TextBox x:Name="txtDiaChi" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Margin="5" Height="25"/>
+
+                <Label Content="Tiền sử bệnh:" Grid.Row="2" Grid.Column="4" Margin="5"/>
+                <TextBox x:Name="txtTienSu" Grid.Row="2" Grid.Column="5" Margin="5" Height="25"/>
+            </Grid>
+        </GroupBox>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button Content="Thêm mới" Width="90" Height="30" Margin="0,0,10,0" Background="#28A745" Foreground="White" Click="BtnThem_Click"/>
+            <Button Content="Cập nhật" Width="90" Height="30" Margin="0,0,10,0" Background="#FFC107" Click="BtnSua_Click"/>
+            <Button Content="Xóa" Width="90" Height="30" Margin="0,0,10,0" Background="#DC3545" Foreground="White" Click="BtnXoa_Click"/>
+            <Button Content="Làm mới form" Width="100" Height="30" Margin="0,0,30,0" Click="BtnLamMoi_Click"/>
+            <Button Content="🩺 Chuyển vào Hàng Đợi Khám" Width="200" Height="40" Background="#F39C12" Foreground="White" FontWeight="Bold" Margin="10,0,0,0" Click="BtnDuaVaoHangDoi_Click"/>
+
+            <Label Content="Tìm kiếm:" VerticalAlignment="Center"/>
+            <TextBox x:Name="txtTimKiem" Width="200" Height="30" Margin="5,0" VerticalContentAlignment="Center" Tag="Nhập Tên hoặc SĐT..."/>
+            <Button Content="Tìm" Width="60" Height="30" Background="#17A2B8" Foreground="White" Click="BtnTim_Click"/>
+        </StackPanel>
+
+        <DataGrid x:Name="dgBenhNhan" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" SelectionChanged="DgBenhNhan_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Mã BN" Binding="{Binding MaBenhNhan}" Width="80"/>
+                <DataGridTextColumn Header="Họ Tên" Binding="{Binding HoTen}" Width="150"/>
+                <DataGridTextColumn Header="Ngày Sinh" Binding="{Binding NgaySinh, StringFormat=dd/MM/yyyy}" Width="100"/>
+                <DataGridTextColumn Header="Giới Tính" Binding="{Binding GioiTinh}" Width="80"/>
+                <DataGridTextColumn Header="SĐT" Binding="{Binding SoDienThoai}" Width="100"/>
+                <DataGridTextColumn Header="Địa Chỉ" Binding="{Binding DiaChi}" Width="*"/>
+                <DataGridTextColumn Header="Nhóm Máu" Binding="{Binding NhomMau}" Width="80"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

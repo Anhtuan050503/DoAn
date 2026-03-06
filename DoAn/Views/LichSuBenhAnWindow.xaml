@@ -1,0 +1,72 @@
+﻿<Window x:Class="DoAn.Views.LichSuBenhAnWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Hồ Sơ Bệnh Án Điện Tử" Height="650" Width="1000" 
+        WindowStartupLocation="CenterScreen" Background="#F4F7FC">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="txtTieuDe" Text="LỊCH SỬ KHÁM BỆNH CỦA: ---" FontSize="22" FontWeight="Bold" Foreground="#2C3E50" Margin="0,0,0,15"/>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="350"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Header="Các lần khám trước" Grid.Column="0" Padding="10">
+                <DataGrid x:Name="dgLichSu" AutoGenerateColumns="False" IsReadOnly="True" 
+                          SelectionMode="Single" SelectionChanged="DgLichSu_SelectionChanged" Background="White" RowHeight="35">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Ngày Khám" Binding="{Binding NgayKham, StringFormat=dd/MM/yyyy}" Width="90"/>
+                        <DataGridTextColumn Header="Bác Sĩ" Binding="{Binding TenBacSi}" Width="120"/>
+                        <DataGridTextColumn Header="Chẩn Đoán" Binding="{Binding ChanDoan}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+
+            <GroupBox Header="Chi tiết Bệnh án" Grid.Column="2" Padding="15">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Background="#ECF0F1" Padding="15" CornerRadius="8" Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="Triệu chứng:" FontWeight="SemiBold" Foreground="#555"/>
+                            <TextBlock x:Name="txtTrieuChung" Text="..." TextWrapping="Wrap" Margin="0,5,0,10" FontWeight="Bold"/>
+
+                            <TextBlock Text="Kết luận bệnh:" FontWeight="SemiBold" Foreground="#555"/>
+                            <TextBlock x:Name="txtChanDoan" Text="..." TextWrapping="Wrap" Margin="0,5,0,0" Foreground="#C0392B" FontWeight="Bold" FontSize="14"/>
+                        </StackPanel>
+                    </Border>
+
+                    <GroupBox Header="Dịch vụ Cận lâm sàng đã làm" Grid.Row="1" Margin="0,0,0,10">
+                        <DataGrid x:Name="dgDichVuCu" AutoGenerateColumns="False" IsReadOnly="True" Background="White" RowHeight="30">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Tên Dịch Vụ" Binding="{Binding TenDichVu}" Width="*"/>
+                                <DataGridTextColumn Header="Số Lượng" Binding="{Binding SoLuong}" Width="80"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+
+                    <GroupBox Header="Đơn thuốc đã kê" Grid.Row="2">
+                        <DataGrid x:Name="dgThuocCu" AutoGenerateColumns="False" IsReadOnly="True" Background="White" RowHeight="30">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Tên Thuốc" Binding="{Binding TenThuoc}" Width="*"/>
+                                <DataGridTextColumn Header="SL" Binding="{Binding SoLuong}" Width="60"/>
+                                <DataGridTextColumn Header="Cách Dùng" Binding="{Binding CachDung}" Width="180"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Window>

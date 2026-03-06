@@ -1,0 +1,52 @@
+﻿<Window x:Class="DoAn.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Hệ thống Quản lý Bệnh viện" Height="768" Width="1024"
+        WindowStartupLocation="CenterScreen" Background="#F4F6F9">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="#2C3E50">
+            <StackPanel>
+                <StackPanel Margin="0,20,0,30" HorizontalAlignment="Center">
+                    <TextBlock Text="✚ DZ HOSPITAL" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="txtXinChao" Text="Xin chào, User" Foreground="#BDC3C7" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="txtQuyenHan" Text="Quyền: Admin" Foreground="#3498DB" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Margin="10,0">
+                    <StackPanel Margin="10,0">
+                        <Button x:Name="btnTongQuan" Content="🏠 Tổng quan (Dashboard)" Height="40" Margin="0,5" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Padding="20,0" Click="btnTongQuan_Click_1"/>
+
+                        <Button x:Name="btnTiepNhan" Content="👥 Tiếp nhận Bệnh nhân" Height="40" Margin="0,5" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Padding="20,0" Click="BtnTiepNhan_Click"/>
+
+                        <Button x:Name="btnKhamBenh" Content="🩺 Khám bệnh &amp; Kê đơn" Height="40" Margin="0,5" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Padding="20,0" Click="BtnKhamBenh_Click"/>
+
+                        <Button x:Name="btnKhoThuoc" Content="💊 Quản lý Kho thuốc" Height="40" Margin="0,5" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Padding="20,0" Click="BtnKhoThuoc_Click"/>
+
+                        <Button x:Name="btnVienPhi" Content="💰 Viện phí &amp; Hóa đơn" Height="40" Margin="0,5" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Padding="20,0" Click="BtnVienPhi_Click"/>
+
+                        <Button x:Name="btnNhanVien" Content="👨‍⚕️ Quản lý Nhân sự" Height="40" Margin="0,5" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Padding="20,0" Click="BtnNhanVien_Click"/>
+
+                        <Button x:Name="btnDatLich" Content="📅 Đặt lịch khám" Height="40" Margin="0,5" Background="Transparent" Foreground="#F39C12" FontWeight="Bold" BorderThickness="0" HorizontalContentAlignment="Left" Padding="20,0" Click="BtnDatLich_Click"/>
+
+                        <Button x:Name="btnLichSuKham" Content="📖 Lịch sử khám bệnh" Height="40" Margin="0,5" Background="Transparent" Foreground="#F39C12" FontWeight="Bold" BorderThickness="0" HorizontalContentAlignment="Left" Padding="20,0" Click="BtnLichSuKham_Click"/>
+                        <Button x:Name="btnDuyetLich" Content="📋 Duyệt Lịch Hẹn" Height="40" Margin="0,5" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Padding="20,0" Click="BtnDuyetLich_Click"/>
+                        <Button x:Name="btnQuanLyHoaDon" Content="🧾 Quản lý Danh sách Hóa đơn" Height="40" Margin="0,5" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Padding="20,0" Click="BtnQuanLyHoaDon_Click"/>
+                        <Separator Margin="10,20" Background="#34495E"/>
+                         
+                        <Button x:Name="btnDangXuat" Content="🚪 Đăng xuất" Height="40" Margin="0,5" Background="#E74C3C" Foreground="White" BorderThickness="0" Click="BtnDangXuat_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1" Margin="10">
+            <ContentControl x:Name="MainContent" />
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,59 @@
+﻿<Window x:Class="DoAn.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Hệ thống Quản lý Bệnh viện - Đăng nhập" 
+        Height="450" Width="800"
+        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True" WindowStyle="None" Background="Transparent">
+
+    <Window.Resources>
+        <ResourceDictionary Source="/MainStyle.xaml"/>
+    </Window.Resources>
+
+    <Border CornerRadius="20" Background="White">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" Color="#CCCCCC" ShadowDepth="2"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="350"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Background="#2196F3" CornerRadius="20,0,0,20">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="✚" FontSize="80" Foreground="White" HorizontalAlignment="Center"/>
+                    <TextBlock Text="HOSPITAL" FontSize="30" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="MANAGEMENT SYSTEM" FontSize="12" Foreground="#E3F2FD" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Button Content="✕" HorizontalAlignment="Right" VerticalAlignment="Top" 
+                    Margin="15" Background="Transparent" Foreground="#757575" BorderThickness="0"
+                    Click="BtnExit_Click" Cursor="Hand" Grid.Column="1"/>
+
+            <StackPanel Grid.Column="1" Margin="40,60,40,40">
+                <TextBlock Text="Chào mừng trở lại!" FontSize="24" FontWeight="Bold" Foreground="#333" Margin="0,0,0,5"/>
+                <TextBlock Text="Vui lòng đăng nhập để tiếp tục công việc" Foreground="#888" Margin="0,0,0,30"/>
+
+                <TextBlock Text="Tên đăng nhập" FontWeight="Medium" Foreground="#555"/>
+                <TextBox x:Name="txtUsername" Style="{StaticResource ModernTextBox}" Tag="Nhập mã nhân viên..."/>
+
+                <TextBlock Text="Mật khẩu" FontWeight="Medium" Foreground="#555"/>
+                <PasswordBox x:Name="txtPassword" Height="35" Margin="0,5,0,20" VerticalContentAlignment="Center"/>
+                
+                <Button Content="ĐĂNG NHẬP HỆ THỐNG" Style="{StaticResource ModernButton}" Click="BtnLogin_Click"/>
+
+                <TextBlock Text="Quên mật khẩu? Liên hệ quản trị viên" Margin="0,20,0,0" 
+                           Foreground="#2196F3" HorizontalAlignment="Center" Cursor="Hand"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                    <TextBlock Text="Chưa có tài khoản? " Foreground="#888"/>
+                    <TextBlock Text="Đăng ký ngay" Foreground="#2196F3" FontWeight="Bold" 
+               Cursor="Hand" MouseLeftButtonUp="OpenRegister_Click"/>
+                </StackPanel>
+            </StackPanel>
+            
+        </Grid>
+    </Border>
+</Window>

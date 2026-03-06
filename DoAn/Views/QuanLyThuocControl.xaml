@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="DoAn.Views.QuanLyThuocControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             Background="White" Margin="10">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Header="Thông tin Thuốc" Grid.Row="0" Margin="0,0,0,10" Padding="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Mã Thuốc:" Grid.Row="0" Grid.Column="0" Margin="5"/>
+                <TextBox x:Name="txtMaThuoc" Grid.Row="0" Grid.Column="1" Margin="5" Height="25"/>
+
+                <Label Content="Tên Thuốc:" Grid.Row="0" Grid.Column="2" Margin="5"/>
+                <TextBox x:Name="txtTenThuoc" Grid.Row="0" Grid.Column="3" Margin="5" Height="25"/>
+
+                <Label Content="Đơn vị tính:" Grid.Row="0" Grid.Column="4" Margin="5"/>
+                <ComboBox x:Name="cboDonViTinh" Grid.Row="0" Grid.Column="5" Margin="5" Height="25">
+                    <ComboBoxItem Content="Viên" IsSelected="True"/>
+                    <ComboBoxItem Content="Vỉ"/>
+                    <ComboBoxItem Content="Hộp"/>
+                    <ComboBoxItem Content="Lọ"/>
+                    <ComboBoxItem Content="Ống"/>
+                </ComboBox>
+
+                <Label Content="Số lượng tồn:" Grid.Row="1" Grid.Column="0" Margin="5"/>
+                <TextBox x:Name="txtSoLuong" Grid.Row="1" Grid.Column="1" Margin="5" Height="25" Text="0"/>
+
+                <Label Content="Giá bán (VNĐ):" Grid.Row="1" Grid.Column="2" Margin="5"/>
+                <TextBox x:Name="txtGiaThuoc" Grid.Row="1" Grid.Column="3" Margin="5" Height="25" Text="0"/>
+
+                <Label Content="Hạn sử dụng:" Grid.Row="1" Grid.Column="4" Margin="5"/>
+                <DatePicker x:Name="dpHanSuDung" Grid.Row="1" Grid.Column="5" Margin="5" Height="25" SelectedDate="{x:Static sys:DateTime.Now}"/>
+            </Grid>
+        </GroupBox>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button Content="Thêm mới" Width="90" Height="30" Margin="0,0,10,0" Background="#28A745" Foreground="White" Click="BtnThem_Click"/>
+            <Button Content="Cập nhật" Width="90" Height="30" Margin="0,0,10,0" Background="#FFC107" Click="BtnSua_Click"/>
+            <Button Content="Xóa" Width="90" Height="30" Margin="0,0,10,0" Background="#DC3545" Foreground="White" Click="BtnXoa_Click"/>
+            <Button Content="Làm mới" Width="90" Height="30" Margin="0,0,30,0" Click="BtnLamMoi_Click"/>
+
+            <Label Content="Tìm kiếm:" VerticalAlignment="Center"/>
+            <TextBox x:Name="txtTimKiem" Width="200" Height="30" Margin="5,0" VerticalContentAlignment="Center" Tag="Nhập Tên thuốc..."/>
+            <Button Content="Tìm" Width="60" Height="30" Background="#17A2B8" Foreground="White" Click="BtnTim_Click"/>
+        </StackPanel>
+
+        <DataGrid x:Name="dgThuoc" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" SelectionChanged="DgThuoc_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Mã Thuốc" Binding="{Binding MaThuoc}" Width="100"/>
+                <DataGridTextColumn Header="Tên Thuốc" Binding="{Binding TenThuoc}" Width="200"/>
+                <DataGridTextColumn Header="ĐVT" Binding="{Binding DonViTinh}" Width="80"/>
+                <DataGridTextColumn Header="Số Lượng" Binding="{Binding SoLuongTon}" Width="100"/>
+                <DataGridTextColumn Header="Giá Bán" Binding="{Binding GiaThuoc, StringFormat={}{0:N0} VNĐ}" Width="120"/>
+                <DataGridTextColumn Header="Hạn Sử Dụng" Binding="{Binding HanSuDung, StringFormat=dd/MM/yyyy}" Width="120"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

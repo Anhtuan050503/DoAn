@@ -1,0 +1,76 @@
+﻿<Window x:Class="DoAn.Views.RegisterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="Đăng ký Tài khoản Bệnh nhân" Height="650" Width="450"
+        WindowStartupLocation="CenterScreen" WindowStyle="None" 
+        AllowsTransparency="True" Background="Transparent">
+
+    <Window.Resources>
+        <ResourceDictionary Source="/MainStyle.xaml"/>
+    </Window.Resources>
+
+    <Border CornerRadius="20" Background="White" BorderBrush="#2196F3" BorderThickness="1">
+        <Grid Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                <TextBlock Text="ĐĂNG KÝ BỆNH NHÂN" FontSize="22" FontWeight="Bold" Foreground="#2196F3" HorizontalAlignment="Center"/>
+                <TextBlock Text="Vui lòng điền đầy đủ thông tin bên dưới" Foreground="#888" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden">
+                <StackPanel>
+                    <TextBlock Text="Họ và Tên *" FontWeight="Medium" Foreground="#555"/>
+                    <TextBox x:Name="txtHoTen" Style="{StaticResource ModernTextBox}"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="Ngày sinh *" FontWeight="Medium" Foreground="#555"/>
+                            <DatePicker x:Name="dpNgaySinh" Height="35" Margin="0,5,0,15" SelectedDate="{x:Static sys:DateTime.Now}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Giới tính *" FontWeight="Medium" Foreground="#555"/>
+                            <ComboBox x:Name="cboGioiTinh" Height="35" Margin="0,5,0,15" VerticalContentAlignment="Center">
+                                <ComboBoxItem Content="Nam" IsSelected="True"/>
+                                <ComboBoxItem Content="Nữ"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="Số điện thoại *" FontWeight="Medium" Foreground="#555"/>
+                    <TextBox x:Name="txtSDT" Style="{StaticResource ModernTextBox}"/>
+
+                    <TextBlock Text="Địa chỉ" FontWeight="Medium" Foreground="#555"/>
+                    <TextBox x:Name="txtDiaChi" Style="{StaticResource ModernTextBox}"/>
+
+                    <Separator Margin="0,10,0,20" Background="#EEE"/>
+
+                    <TextBlock Text="Tên đăng nhập (Username) *" FontWeight="Medium" Foreground="#555"/>
+                    <TextBox x:Name="txtUsername" Style="{StaticResource ModernTextBox}"/>
+
+                    <TextBlock Text="Mật khẩu *" FontWeight="Medium" Foreground="#555"/>
+                    <PasswordBox x:Name="txtPassword" Height="35" Margin="0,5,0,15" VerticalContentAlignment="Center"/>
+
+                    <TextBlock Text="Xác nhận mật khẩu *" FontWeight="Medium" Foreground="#555"/>
+                    <PasswordBox x:Name="txtConfirmPassword" Height="35" Margin="0,5,0,20" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="2">
+                <Button Content="ĐĂNG KÝ NGAY" Style="{StaticResource ModernButton}" Click="BtnRegister_Click"/>
+                <TextBlock Text="Đã có tài khoản? Đăng nhập" Foreground="#2196F3" 
+                           HorizontalAlignment="Center" Margin="0,15,0,0" 
+                           Cursor="Hand" MouseLeftButtonUp="BackToLogin_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

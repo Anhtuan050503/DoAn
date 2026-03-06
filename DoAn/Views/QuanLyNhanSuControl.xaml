@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="DoAn.Views.QuanLyNhanSuControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="White" Margin="10">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Header="Thông tin Tài khoản Nhân sự" Grid.Row="0" Margin="0,0,0,10" Padding="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Mã Nhân Viên:" Grid.Row="0" Grid.Column="0" Margin="5"/>
+                <TextBox x:Name="txtMaNV" Grid.Row="0" Grid.Column="1" Margin="5" Height="25"/>
+
+                <Label Content="Họ và Tên:" Grid.Row="0" Grid.Column="2" Margin="5"/>
+                <TextBox x:Name="txtHoTen" Grid.Row="0" Grid.Column="3" Margin="5" Height="25"/>
+
+                <Label Content="Chức vụ (Quyền):" Grid.Row="0" Grid.Column="4" Margin="5"/>
+                <ComboBox x:Name="cboChucVu" Grid.Row="0" Grid.Column="5" Margin="5" Height="25">
+                    <ComboBoxItem Content="Bác sĩ" IsSelected="True"/>
+                    <ComboBoxItem Content="Lễ tân"/>
+                    <ComboBoxItem Content="Thu ngân"/>
+                    <ComboBoxItem Content="Admin"/>
+                </ComboBox>
+
+                <Label Content="Tên Đăng Nhập:" Grid.Row="1" Grid.Column="0" Margin="5"/>
+                <TextBox x:Name="txtTenDangNhap" Grid.Row="1" Grid.Column="1" Margin="5" Height="25"/>
+
+                <Label Content="Mật khẩu (Gốc):" Grid.Row="1" Grid.Column="2" Margin="5"/>
+                <TextBox x:Name="txtMatKhau" Grid.Row="1" Grid.Column="3" Margin="5" Height="25" Tag="Sẽ tự động mã hóa khi lưu"/>
+
+                <Label Content="Trạng thái:" Grid.Row="1" Grid.Column="4" Margin="5"/>
+                <ComboBox x:Name="cboTrangThai" Grid.Row="1" Grid.Column="5" Margin="5" Height="25">
+                    <ComboBoxItem Content="Đang hoạt động" IsSelected="True"/>
+                    <ComboBoxItem Content="Đã khóa / Nghỉ việc"/>
+                </ComboBox>
+            </Grid>
+        </GroupBox>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button Content="Tạo Tài Khoản" Width="110" Height="30" Margin="0,0,10,0" Background="#28A745" Foreground="White" Click="BtnThem_Click"/>
+            <Button Content="Cập nhật" Width="90" Height="30" Margin="0,0,10,0" Background="#FFC107" Click="BtnSua_Click"/>
+            <Button Content="Khóa TK" Width="90" Height="30" Margin="0,0,10,0" Background="#DC3545" Foreground="White" Click="BtnKhoa_Click"/>
+            <Button Content="Làm mới" Width="90" Height="30" Margin="0,0,30,0" Click="BtnLamMoi_Click"/>
+        </StackPanel>
+
+        <DataGrid x:Name="dgNhanSu" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" SelectionChanged="DgNhanSu_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Mã NV" Binding="{Binding MaNhanVien}" Width="80"/>
+                <DataGridTextColumn Header="Họ Tên" Binding="{Binding HoTen}" Width="180"/>
+                <DataGridTextColumn Header="Chức Vụ" Binding="{Binding ChucVu}" Width="100"/>
+                <DataGridTextColumn Header="Tên Đăng Nhập" Binding="{Binding TenDangNhap}" Width="120"/>
+                <DataGridCheckBoxColumn Header="Hoạt Động" Binding="{Binding TrangThai}" Width="80"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

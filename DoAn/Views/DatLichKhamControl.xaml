@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="DoAn.Views.DatLichKhamControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             Background="#F4F7FC">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="White" CornerRadius="12" Padding="25" Margin="0,0,0,20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" ShadowDepth="2" Color="#D0D4DC" Opacity="0.5"/>
+            </Border.Effect>
+
+            <StackPanel>
+                <TextBlock Text="ĐĂNG KÝ LỊCH HẸN" FontSize="20" FontWeight="Bold" Foreground="#2C3E50" Margin="0,0,0,20"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Ngày khám:" FontWeight="SemiBold" Foreground="#555" Margin="0,0,0,8"/>
+                        <DatePicker x:Name="dpNgayHen" Height="40" FontSize="14" Padding="5" SelectedDate="{x:Static sys:DateTime.Now}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Khung giờ:" FontWeight="SemiBold" Foreground="#555" Margin="0,0,0,8"/>
+                        <ComboBox x:Name="cboGioHen" Height="40" FontSize="14" VerticalContentAlignment="Center" Padding="5">
+                            <ComboBoxItem Content="08:00" IsSelected="True"/>
+                            <ComboBoxItem Content="09:00"/>
+                            <ComboBoxItem Content="10:00"/>
+                            <ComboBoxItem Content="14:00"/>
+                            <ComboBoxItem Content="15:00"/>
+                            <ComboBoxItem Content="16:00"/>
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="Triệu chứng / Lý do khám:" FontWeight="SemiBold" Foreground="#555" Margin="0,20,0,8"/>
+                <TextBox x:Name="txtLyDo" Height="80" TextWrapping="Wrap" AcceptsReturn="True" FontSize="14" Padding="10"/>
+
+                <Button Content="XÁC NHẬN ĐẶT LỊCH" Height="45" Width="200" HorizontalAlignment="Right" 
+                        Background="#27AE60" Foreground="White" FontSize="15" FontWeight="Bold" Margin="0,20,0,0" 
+                        Click="BtnDatLich_Click" Cursor="Hand" BorderThickness="0">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="8"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" ShadowDepth="2" Color="#D0D4DC" Opacity="0.5"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="LỊCH HẸN CỦA TÔI" FontSize="18" FontWeight="Bold" Foreground="#2C3E50" Margin="0,0,0,15"/>
+
+                <DataGrid x:Name="dgLichHen" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" 
+                          Background="White" BorderThickness="0" RowHeight="40" FontSize="14" HeadersVisibility="Column"
+                          GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#EEEEEE">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Mã Lịch" Binding="{Binding MaLichHen}" Width="80"/>
+                        <DataGridTextColumn Header="Ngày Hẹn" Binding="{Binding NgayHen, StringFormat=dd/MM/yyyy}" Width="120"/>
+                        <DataGridTextColumn Header="Giờ" Binding="{Binding GioHen}" Width="80"/>
+                        <DataGridTextColumn Header="Lý Do Khám" Binding="{Binding LyDoKham}" Width="*"/>
+                        <DataGridTextColumn Header="Trạng Thái" Binding="{Binding TrangThai}" Width="150"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
